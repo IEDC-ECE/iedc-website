@@ -6,7 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
-import Team from "@/pages/Team";
+import People from "@/pages/Team";
+import ResearchVerticals from "@/pages/ResearchVerticals";
 import EventsOverview from "@/pages/events/EventsOverview";
 import BengalESummit2024 from "@/pages/events/BengalESummit2024";
 import BengalESummit2025 from "@/pages/events/BengalESummit2025";
@@ -23,6 +24,11 @@ import InnovationProjects from "@/pages/innovation/Projects";
 import InnovationJournal from "@/pages/innovation/Journal";
 import InnovationConference from "@/pages/innovation/Conference";
 import InnovationBookChapter from "@/pages/innovation/BookChapter";
+import { Redirect } from "wouter";
+
+function TeamRedirect() {
+  return <Redirect to="/people" />;
+}
 
 function Router() {
   return (
@@ -30,7 +36,9 @@ function Router() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/about" component={About} />
-        <Route path="/team" component={Team} />
+        <Route path="/people" component={People} />
+        <Route path="/team" component={TeamRedirect} />
+        <Route path="/research-verticals" component={ResearchVerticals} />
         <Route path="/events" component={EventsOverview} />
         <Route path="/events/bengal-e-summit-2024" component={BengalESummit2024} />
         <Route path="/events/bengal-e-summit-2025" component={BengalESummit2025} />

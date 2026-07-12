@@ -6,7 +6,7 @@ import iedcLogo from "@assets/IEDC_Logo_1753773593525.png";
 const quickLinks = [
   { name: "Home", path: "/" },
   { name: "About Us", path: "/about" },
-  { name: "Team", path: "/team" },
+  { name: "People", path: "/people" },
   { name: "Events", path: "/events" },
   { name: "Gallery", path: "/gallery" },
 ];
@@ -16,6 +16,7 @@ const moreLinks = [
 ];
 
 const innovationLinks = [
+  { name: "Research Verticals", path: "/research-verticals" },
   { name: "Start-ups", path: "/innovation/startups" },
   { name: "Patents", path: "/innovation/patents" },
   { name: "Sponsored Research", path: "/innovation/grants" },

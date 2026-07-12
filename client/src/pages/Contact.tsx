@@ -68,7 +68,7 @@ export default function Contact() {
       <section className="py-16 bg-gradient-to-r from-iedc-light-blue to-iedc-blue text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-8">Contact Us</h1>
-          <p className="text-xl">Get in touch with the IEDC team</p>
+          <p className="text-xl">Get in touch with the IEDC community</p>
           <div className="w-24 h-1 bg-white mx-auto mt-8"></div>
         </div>
       </section>

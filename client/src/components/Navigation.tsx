@@ -16,13 +16,14 @@ import {
 const navigationItems = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
-  { name: "Team", path: "/team" },
+  { name: "People", path: "/people" },
   { name: "Events", path: "/events" },
   { name: "Gallery", path: "/gallery" },
   { name: "Contact", path: "/contact" },
 ];
 
 const innovationSubItems = [
+  { name: "Research Verticals", path: "/research-verticals" },
   { name: "Sponsored Research", path: "/innovation/grants" },
   { name: "Projects", path: "/innovation/projects" },
   { name: "Patents", path: "/innovation/patents" },
@@ -52,7 +53,7 @@ export default function Navigation() {
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
-              {/* Home, About, Team */}
+              {/* Home, About, People */}
               {navigationItems.slice(0, 3).map((item) => (
                 <Link
                   key={item.path}
@@ -126,7 +127,7 @@ export default function Navigation() {
               </SheetTrigger>
               <SheetContent side="right" className="w-64">
                 <div className="flex flex-col space-y-4 mt-8">
-                  {/* Home, About, Team */}
+                  {/* Home, About, People */}
                   {navigationItems.slice(0, 3).map((item) => (
                     <Link
                       key={item.path}

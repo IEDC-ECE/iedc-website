@@ -1,18 +1,9 @@
+import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
-  Lightbulb, Settings, Rocket, Users, Eye, Target, 
-  Globe, GraduationCap, Cpu, Handshake, Bot, Wifi, 
-  Radio, Brain, Microchip, Signal 
+  Settings, Rocket, Users, Eye, Target, 
+  Globe, GraduationCap, Cpu, Handshake 
 } from "lucide-react";
-
-const techAreas = [
-  { icon: Bot, title: "Robotics", description: "Advanced robotics systems and automation" },
-  { icon: Wifi, title: "IoT", description: "Internet of Things and connected devices" },
-  { icon: Radio, title: "RF & Antenna", description: "Radio frequency and antenna technology" },
-  { icon: Brain, title: "AI & Machine Learning", description: "Artificial Intelligence solutions and advanced ML algorithms" },
-  { icon: Microchip, title: "VLSI", description: "Very Large Scale Integration design and implementation" },
-  { icon: Signal, title: "Communications", description: "Modern communication systems and protocols" },
-];
 
 export default function About() {
   return (
@@ -136,23 +127,6 @@ export default function About() {
               </blockquote>
             </CardContent>
           </Card>
-
-          <div className="mb-8">
-            <h3 className="text-2xl font-bold iedc-gray text-center mb-8">Technology Areas</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {techAreas.map((area, index) => (
-                <Card key={index} className="shadow-md hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="iedc-blue text-2xl mb-4">
-                      <area.icon className="h-8 w-8" />
-                    </div>
-                    <h3 className="text-lg font-semibold mb-2 iedc-gray">{area.title}</h3>
-                    <p className="text-gray-600 text-sm">{area.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
     </div>

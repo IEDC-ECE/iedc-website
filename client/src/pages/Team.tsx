@@ -328,13 +328,13 @@ const studentCommittees = [
   }
 ];
 
-export default function Team() {
+export default function People() {
   return (
     <div>
       <section className="py-16 bg-gradient-to-r from-iedc-blue to-iedc-light-blue text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-8">Our Team</h1>
-          <p className="text-xl">Meet the faculty members driving innovation and excellence at IEDC</p>
+          <h1 className="text-4xl md:text-5xl font-bold mb-8">Our People</h1>
+          <p className="text-xl">Meet the faculty and student contributors driving innovation and excellence at IEDC</p>
           <div className="w-24 h-1 bg-white mx-auto mt-8"></div>
         </div>
       </section>

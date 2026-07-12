@@ -12,9 +12,15 @@ const quickLinks = [
   },
   {
     icon: Users,
-    title: "Team",
-    description: "Meet our leadership team",
-    path: "/team",
+    title: "People",
+    description: "Meet our faculty and student community",
+    path: "/people",
+  },
+  {
+    icon: TrendingUp,
+    title: "Research Verticals",
+    description: "Explore our core technology focus areas",
+    path: "/research-verticals",
   },
   {
     icon: Calendar,
