@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, BookOpen, ExternalLink } from "lucide-react";
+import { User, BookOpen, ExternalLink, Calendar } from "lucide-react";
+import { journalPublications2025To2026 } from "@/data/publications-2025-2026";
 
 type JournalPublication = {
   paper: string;
@@ -9,6 +10,8 @@ type JournalPublication = {
   journal: string;
   volume?: string;
   pages?: string;
+  year?: string;
+  indexing?: string;
 };
 
 type AcademicYearData = {
@@ -17,6 +20,10 @@ type AcademicYearData = {
 };
 
 const journalData: AcademicYearData[] = [
+  {
+    year: "July 2025 - June 2026",
+    publications: journalPublications2025To2026,
+  },
   {
     year: "July 2024 - June 2025",
     publications: [
@@ -436,10 +443,17 @@ export default function InnovationJournal() {
                   <Card key={index} className="shadow-md hover:shadow-lg transition-shadow border-l-4 border-iedc-blue">
                     <CardContent className="p-6">
                       <div className="mb-4">
-                        <Badge className="mb-3 bg-blue-100 text-blue-800">
-                          <BookOpen className="w-3 h-3 mr-1" />
-                          Journal Article
-                        </Badge>
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <Badge className="bg-blue-100 text-blue-800">
+                            <BookOpen className="w-3 h-3 mr-1" />
+                            Journal Article
+                          </Badge>
+                          {pub.indexing && (
+                            <Badge variant="outline" className="border-emerald-300 text-emerald-700">
+                              {pub.indexing}
+                            </Badge>
+                          )}
+                        </div>
                         <h3 className="text-lg font-bold text-gray-800 mb-3 line-clamp-3">
                           {pub.paper}
                         </h3>
@@ -458,6 +472,16 @@ export default function InnovationJournal() {
                           <p className="text-sm font-medium text-gray-700">Journal</p>
                           <p className="text-sm text-gray-600">{pub.journal}</p>
                         </div>
+
+                        {pub.year && (
+                          <div className="flex items-start">
+                            <Calendar className="text-iedc-blue h-4 w-4 mt-1 mr-2 flex-shrink-0" />
+                            <div>
+                              <p className="text-sm font-medium text-gray-700">Year</p>
+                              <p className="text-sm text-gray-600">{pub.year}</p>
+                            </div>
+                          </div>
+                        )}
 
                         {pub.volume && (
                           <div>

@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { User, BookOpen, ExternalLink, Calendar } from "lucide-react";
+import { conferencePublications2025To2026 } from "@/data/publications-2025-2026";
 
 type ConferencePublication = {
   paper: string;
@@ -8,6 +9,7 @@ type ConferencePublication = {
   doi?: string;
   conference: string;
   date: string;
+  indexing?: string;
 };
 
 type AcademicYearData = {
@@ -16,6 +18,10 @@ type AcademicYearData = {
 };
 
 const conferenceData: AcademicYearData[] = [
+  {
+    year: "July 2025 - June 2026",
+    publications: conferencePublications2025To2026,
+  },
   {
     year: "July 2024 - June 2025",
     publications: [
@@ -804,10 +810,17 @@ export default function InnovationConference() {
                   <Card key={index} className="shadow-md hover:shadow-lg transition-shadow border-l-4 border-iedc-blue">
                     <CardContent className="p-6">
                       <div className="mb-4">
-                        <Badge className="mb-3 bg-purple-100 text-purple-800">
-                          <BookOpen className="w-3 h-3 mr-1" />
-                          Conference Paper
-                        </Badge>
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <Badge className="bg-purple-100 text-purple-800">
+                            <BookOpen className="w-3 h-3 mr-1" />
+                            Conference Paper
+                          </Badge>
+                          {pub.indexing && (
+                            <Badge variant="outline" className="border-emerald-300 text-emerald-700">
+                              {pub.indexing}
+                            </Badge>
+                          )}
+                        </div>
                         <h3 className="text-lg font-bold text-gray-800 mb-3 line-clamp-3">
                           {pub.paper}
                         </h3>
