@@ -6,9 +6,6 @@ import drSatyajitImg from "@assets/faculty_images/satyajit_chakrabarti.jpg";
 import drMalayImg from "@assets/faculty_images/malay_gangopadhyay.jpg";
 import drSubhabrataImg from "@assets/faculty_images/subhabrata_banerjee.jpg";
 import drIndranilImg from "@assets/faculty_images/indranil_maity.jpg";
-import drSayanSarkarImg from "@assets/faculty_images/Sayan Sarkar.jpeg";
-import drSutanuGhoshImg from "@assets/faculty_images/Sutanu Ghosh.jpeg";
-import drGobindaSenImg from "@assets/faculty_images/Gobinda Sen.jpeg";
 
 // Student images
 import sagnikChakrabortyImg from "@assets/student_images/sagnik_chakraborty.jpg";
@@ -42,7 +39,7 @@ import prayasRoyImg from "@assets/student_images/prayas_roy.jpeg";
 const facultyMembers = [
   {
     name: "Dr. Satyajit Chakrabarti",
-    designation: "Director, IEM-UEM Group",
+    designation: "Director-IEM , Vice Chancellor- UEM",
     bio: "Provides strategic leadership and vision for the IEM-UEM Group, overseeing academic and entrepreneurial initiatives.",
     image: drSatyajitImg,
     icon: Crown,
@@ -71,30 +68,6 @@ const facultyMembers = [
     image: drIndranilImg,
     icon: Users,
     bgColor: "bg-iedc-light-blue",
-  },
-  {
-    name: "Dr. Sayan Sarkar",
-    designation: "Associate Professor",
-    bio: "Collaborates with Dr. Subhabrata Banerjee to manage IEDC activities, focusing on Sponsored Research, industry partnerships, and entrepreneurial training.",
-    image: drSayanSarkarImg,
-    icon: Users,
-    bgColor: "bg-orange-600",
-  },
-  {
-    name: "Dr. Sutanu Ghosh",
-    designation: "Associate Professor",
-    bio: "Collaborates with Dr. Subhabrata Banerjee to manage IEDC activities, focusing on Sponsored Research, industry partnerships, and entrepreneurial training.",
-    image: drSutanuGhoshImg,
-    icon: Users,
-    bgColor: "bg-teal-600",
-  },
-  {
-    name: "Dr. Gobinda Sen",
-    designation: "Associate Professor",
-    bio: "Collaborates with Dr. Subhabrata Banerjee to manage IEDC activities, focusing on Sponsored Research, industry partnerships, and entrepreneurial training.",
-    image: drGobindaSenImg,
-    icon: Users,
-    bgColor: "bg-cyan-600",
   },
 ];
 
@@ -331,10 +304,12 @@ const studentCommittees = [
 
 const facultyVariants = {
   hidden: (index: number) => {
-    const colIndex = index % 3;
+    const colIndex = index % 4;
     let xOffset = 0;
-    if (colIndex === 0) xOffset = 150; // Left column, start pushed right (center)
-    if (colIndex === 2) xOffset = -150; // Right column, start pushed left (center)
+    if (colIndex === 0) xOffset = 100; // Far left
+    if (colIndex === 1) xOffset = 50;  // Center left
+    if (colIndex === 2) xOffset = -50; // Center right
+    if (colIndex === 3) xOffset = -100; // Far right
     
     return {
       opacity: 0,
@@ -350,7 +325,7 @@ const facultyVariants = {
       type: "spring",
       stiffness: 80,
       damping: 15,
-      delay: (index % 3) * 0.1, // Stagger slightly per row
+      delay: (index % 4) * 0.1,
     }
   })
 };
@@ -395,7 +370,7 @@ export default function People() {
             Faculty Members
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8">
             {facultyMembers.map((member, index) => (
               <motion.div
                 key={index}
@@ -408,7 +383,7 @@ export default function People() {
               >
                 <Card className="shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-t-4 border-iedc-blue overflow-hidden flex flex-col h-full group bg-white/50 backdrop-blur-sm">
                 {/* Faculty Photo (Large) */}
-                <div className="w-full h-72 md:h-80 relative overflow-hidden bg-gray-100">
+                <div className="w-full h-64 md:h-72 relative overflow-hidden bg-gray-100">
                   <img
                     src={member.image}
                     alt={member.name}
