@@ -1,7 +1,25 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Users, MapPin, ArrowRight } from "lucide-react";
+import { Calendar, Users, MapPin, ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "wouter";
+import { motion } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 80, damping: 15 },
+  },
+};
 
 const eventsByYear = {
   2024: [
@@ -67,139 +85,176 @@ const getCategoryColor = (category: string) => {
 
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
-    case 'completed': return 'bg-green-100 text-green-800 border-green-200';
-    case 'upcoming': return 'bg-blue-100 text-blue-800 border-blue-200';
-    default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    case 'completed': return 'bg-emerald-50 text-emerald-700 border-emerald-200/50 shadow-sm';
+    case 'upcoming': return 'bg-blue-50 text-blue-700 border-blue-200/50 shadow-sm';
+    default: return 'bg-slate-50 text-slate-700 border-slate-200/50 shadow-sm';
   }
 };
 
 export default function EventsOverview() {
   return (
-    <div>
+    <div className="bg-white min-h-screen">
       {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-r from-iedc-blue to-iedc-light-blue text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-8">Our Events</h1>
-          <p className="text-xl mb-8">
+      <section className="pt-24 pb-12 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-50/50 rounded-full mix-blend-multiply filter blur-[100px] opacity-70 animate-pulse"></div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <motion.h1 
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 100 }}
+            className="text-5xl md:text-7xl font-extrabold mb-6 text-slate-900 tracking-tight"
+          >
+            Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-900 to-blue-600">Events</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1, type: "spring", stiffness: 100 }}
+            className="text-xl md:text-2xl text-slate-600 font-medium max-w-3xl mx-auto mb-8 leading-relaxed"
+          >
             Fostering innovation, entrepreneurship, and collaboration through impactful events
-          </p>
-          <div className="w-24 h-1 bg-white mx-auto"></div>
+          </motion.p>
+          <motion.div 
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="w-24 h-1.5 bg-gradient-to-r from-blue-900 to-blue-400 mx-auto rounded-full"
+          />
         </div>
       </section>
 
       {/* Events by Year */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white relative z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {Object.entries(eventsByYear)
             .sort(([a], [b]) => Number(b) - Number(a))
             .map(([year, events]) => (
-              <div key={year} className="mb-16">
-                <div className="flex items-center mb-8">
-                  <div className="flex-1 h-px bg-gray-300"></div>
-                  <div className="px-6">
-                    <h2 className="text-3xl font-bold iedc-gray">{year}</h2>
+              <div key={year} className="mb-20">
+                <div className="flex items-center mb-10">
+                  <div className="flex-1 h-[2px] bg-gradient-to-r from-transparent to-blue-100"></div>
+                  <div className="px-8 py-2 rounded-full border border-blue-50 bg-white shadow-[0_0_20px_rgba(30,58,138,0.03)]">
+                    <h2 className="text-3xl font-extrabold text-blue-900">{year}</h2>
                   </div>
-                  <div className="flex-1 h-px bg-gray-300"></div>
+                  <div className="flex-1 h-[2px] bg-gradient-to-l from-transparent to-blue-100"></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <motion.div 
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                  variants={containerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                >
                   {events.map((event) => (
-                    <Card key={event.id} className="shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                      <CardContent className="p-6">
-                        <div className="flex justify-between items-start mb-4">
-                          <Badge className={`${getCategoryColor(event.category)} text-white text-xs`}>
-                            {event.category}
-                          </Badge>
-                          <Badge className={`${getStatusColor(event.status)} text-xs border`}>
-                            {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
-                          </Badge>
-                        </div>
-
-                        <h3 className="text-xl font-bold iedc-gray mb-2">{event.name}</h3>
-                        <p className="text-sm text-gray-500 mb-3">{event.edition}</p>
-
-                        <div className="space-y-2 mb-4">
-                          <div className="flex items-center text-sm text-gray-600">
-                            <Calendar className="h-4 w-4 mr-2 iedc-blue" />
-                            {event.date}
+                    <motion.div key={event.id} variants={itemVariants}>
+                      <Card className="bg-white border border-blue-50/50 shadow-[0_0_30px_rgba(30,58,138,0.06)] rounded-[1.5rem] h-full hover:shadow-[0_0_50px_rgba(30,58,138,0.12)] hover:-translate-y-2 transition-all duration-300 flex flex-col group">
+                        <CardContent className="p-8 flex flex-col h-full">
+                          <div className="flex justify-between items-start mb-6 gap-2">
+                            <Badge className={`${getCategoryColor(event.category)} text-white px-3 py-1 text-xs font-semibold rounded-full shadow-sm`}>
+                              {event.category}
+                            </Badge>
+                            <Badge className={`${getStatusColor(event.status)} px-3 py-1 text-xs font-semibold rounded-full`}>
+                              {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
+                            </Badge>
                           </div>
-                          <div className="flex items-center text-sm text-gray-600">
-                            <MapPin className="h-4 w-4 mr-2 iedc-blue" />
-                            {event.venue}
-                          </div>
-                          <div className="flex items-center text-sm text-gray-600">
-                            <Users className="h-4 w-4 mr-2 iedc-blue" />
-                            {event.participants}
-                          </div>
-                        </div>
 
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                          {event.description}
-                        </p>
+                          <h3 className="text-2xl font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors leading-tight">{event.name}</h3>
+                          <p className="text-sm font-medium text-blue-600 mb-6">{event.edition}</p>
 
-                        {event.status === 'completed' && (
-                          <Link href={`/events/${event.id}`}>
-                            <div className="flex items-center justify-between p-3 bg-iedc-light-gray rounded-lg hover:bg-gray-200 transition-colors cursor-pointer">
-                              <span className="text-sm font-medium iedc-gray">View Event Details</span>
-                              <ArrowRight className="h-4 w-4 iedc-blue" />
+                          <div className="space-y-3 mb-6 flex-1">
+                            <div className="flex items-center text-sm font-medium text-slate-600 bg-slate-50 p-2 rounded-lg">
+                              <Calendar className="h-4 w-4 mr-3 text-blue-600" />
+                              {event.date}
                             </div>
-                          </Link>
-                        )}
-
-                        {event.status === 'upcoming' && (event.id === 'bengal-e-summit-2025' || event.id === 'triwizard-trials-2025') && (
-                          <Link href={`/events/${event.id}`}>
-                            <div className="flex items-center justify-between p-3 bg-iedc-light-gray rounded-lg hover:bg-gray-200 transition-colors cursor-pointer">
-                              <span className="text-sm font-medium iedc-gray">View Event Details</span>
-                              <ArrowRight className="h-4 w-4 iedc-blue" />
+                            <div className="flex items-center text-sm font-medium text-slate-600 bg-slate-50 p-2 rounded-lg">
+                              <MapPin className="h-4 w-4 mr-3 text-blue-600" />
+                              {event.venue}
                             </div>
-                          </Link>
-                        )}
-
-                        {event.status === 'upcoming' && event.id !== 'bengal-e-summit-2025' && event.id !== 'triwizard-trials-2025' && (
-                          <div className="p-3 bg-blue-50 rounded-lg">
-                            <span className="text-sm font-medium text-blue-800">More details coming soon</span>
+                            <div className="flex items-center text-sm font-medium text-slate-600 bg-slate-50 p-2 rounded-lg">
+                              <Users className="h-4 w-4 mr-3 text-blue-600" />
+                              {event.participants}
+                            </div>
                           </div>
-                        )}
-                      </CardContent>
-                    </Card>
+
+                          <p className="text-slate-600 text-sm mb-6 line-clamp-3 leading-relaxed">
+                            {event.description}
+                          </p>
+
+                          <div className="mt-auto">
+                            {(event.status === 'completed' || event.id === 'bengal-e-summit-2025' || event.id === 'triwizard-trials-2025') ? (
+                              <Link href={`/events/${event.id}`}>
+                                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50/50 rounded-xl hover:from-blue-100 hover:to-indigo-100 transition-colors cursor-pointer border border-blue-100/50 group/btn">
+                                  <span className="text-sm font-bold text-blue-900">View Event Details</span>
+                                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm group-hover/btn:translate-x-1 transition-transform">
+                                    <ArrowRight className="h-4 w-4 text-blue-600" />
+                                  </div>
+                                </div>
+                              </Link>
+                            ) : (
+                              <div className="flex items-center justify-center p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <Sparkles className="h-4 w-4 mr-2 text-slate-400" />
+                                <span className="text-sm font-medium text-slate-500">More details coming soon</span>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </div>
             ))}
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-iedc-light-gray">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold iedc-gray mb-6">Stay Updated</h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Don't miss out on our upcoming events and opportunities. Follow us for the latest updates
-            on workshops, competitions, summits, and networking events.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-iedc-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                <Calendar className="h-8 w-8 text-white" />
+      <section className="py-24 relative overflow-hidden bg-white">
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-50/50 rounded-full mix-blend-multiply filter blur-[100px] opacity-70 -z-10"></div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">Stay Updated</h2>
+            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto font-medium leading-relaxed">
+              Don't miss out on our upcoming events and opportunities. Follow us for the latest updates
+              on workshops, competitions, summits, and networking events.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
+            <motion.div variants={itemVariants} className="text-center group">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-[0_8px_30px_rgb(30,58,138,0.08)] group-hover:-translate-y-2 group-hover:shadow-[0_15px_40px_rgb(30,58,138,0.15)] transition-all duration-300 border border-blue-100/50">
+                <Calendar className="h-10 w-10 text-blue-900 group-hover:scale-110 transition-transform duration-500" />
               </div>
-              <h3 className="text-lg font-semibold iedc-gray mb-2">Regular Events</h3>
-              <p className="text-gray-600 text-sm">Monthly workshops and quarterly competitions</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-iedc-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-white" />
+              <h3 className="text-xl font-bold text-slate-800 mb-3">Regular Events</h3>
+              <p className="text-slate-500 font-medium">Monthly workshops and quarterly competitions</p>
+            </motion.div>
+            
+            <motion.div variants={itemVariants} className="text-center group">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-[0_8px_30px_rgb(30,58,138,0.08)] group-hover:-translate-y-2 group-hover:shadow-[0_15px_40px_rgb(30,58,138,0.15)] transition-all duration-300 border border-blue-100/50">
+                <Users className="h-10 w-10 text-blue-900 group-hover:scale-110 transition-transform duration-500" />
               </div>
-              <h3 className="text-lg font-semibold iedc-gray mb-2">Community</h3>
-              <p className="text-gray-600 text-sm">Connect with fellow entrepreneurs and innovators</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-iedc-blue rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="h-8 w-8 text-white" />
+              <h3 className="text-xl font-bold text-slate-800 mb-3">Community</h3>
+              <p className="text-slate-500 font-medium">Connect with fellow entrepreneurs and innovators</p>
+            </motion.div>
+            
+            <motion.div variants={itemVariants} className="text-center group">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-[0_8px_30px_rgb(30,58,138,0.08)] group-hover:-translate-y-2 group-hover:shadow-[0_15px_40px_rgb(30,58,138,0.15)] transition-all duration-300 border border-blue-100/50">
+                <MapPin className="h-10 w-10 text-blue-900 group-hover:scale-110 transition-transform duration-500" />
               </div>
-              <h3 className="text-lg font-semibold iedc-gray mb-2">Multiple Venues</h3>
-              <p className="text-gray-600 text-sm">Events across our campuses and partner locations</p>
-            </div>
-          </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-3">Multiple Venues</h3>
+              <p className="text-slate-500 font-medium">Events across our campuses and partner locations</p>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
     </div>

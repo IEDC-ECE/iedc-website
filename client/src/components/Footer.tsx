@@ -93,23 +93,32 @@ export default function Footer() {
 
         <div className="border-t border-gray-700 mt-8 pt-8 text-center">
           <p className="text-gray-400">
-            Developed by{" "}
+            Developed by-{" "}
             <a 
-              href="https://www.linkedin.com/in/sujaan-bhattacharyya-92a679257/" 
+              href="https://www.linkedin.com/in/sutavrariomitra6/" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="text-blue-400 hover:text-blue-300 transition-colors"
             >
-              Sujaan
+              Sutavra
+            </a>
+            ,{" "}
+            <a 
+              href="https://www.linkedin.com/in/srudyuti-dey-021620322/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              Srudyuti
             </a>
             {" "}&{" "}
             <a 
-              href="https://www.linkedin.com/in/sanketghosh19/" 
+              href="https://www.linkedin.com/in/swarnavo-de-b5519a285/" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="text-blue-400 hover:text-blue-300 transition-colors"
             >
-              Sanket
+              Swarnavo
             </a>
           </p>
         </div>

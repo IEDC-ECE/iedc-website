@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { User, Crown, Building, Users, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 import drSatyajitImg from "@assets/faculty_images/satyajit_chakrabarti.jpg";
 import drMalayImg from "@assets/faculty_images/malay_gangopadhyay.jpg";
 import drSubhabrataImg from "@assets/faculty_images/subhabrata_banerjee.jpg";
@@ -328,63 +329,110 @@ const studentCommittees = [
   }
 ];
 
+const facultyVariants = {
+  hidden: (index: number) => {
+    const colIndex = index % 3;
+    let xOffset = 0;
+    if (colIndex === 0) xOffset = 150; // Left column, start pushed right (center)
+    if (colIndex === 2) xOffset = -150; // Right column, start pushed left (center)
+    
+    return {
+      opacity: 0,
+      x: xOffset,
+      scale: 0.8,
+    };
+  },
+  visible: (index: number) => ({
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 80,
+      damping: 15,
+      delay: (index % 3) * 0.1, // Stagger slightly per row
+    }
+  })
+};
+
+const studentVariants = {
+  hidden: (custom: { index: number; total: number }) => {
+    const centerIndex = (custom.total - 1) / 2;
+    const diff = centerIndex - custom.index; // Positive if left, negative if right
+    return {
+      opacity: 0,
+      x: diff * 80, // Start pulled towards the center
+      scale: 0.8,
+    };
+  },
+  visible: (custom: { index: number; total: number }) => ({
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 80,
+      damping: 15,
+      delay: custom.index * 0.1,
+    }
+  })
+};
+
 export default function People() {
   return (
     <div>
-      <section className="py-16 bg-gradient-to-r from-iedc-blue to-iedc-light-blue text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-8">Our People</h1>
-          <p className="text-xl">Meet the faculty and student contributors driving innovation and excellence at IEDC</p>
-          <div className="w-24 h-1 bg-white mx-auto mt-8"></div>
+      <section className="pt-20 pb-6 bg-white relative">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-slate-900 tracking-tight">Our People</h1>
+          <p className="text-lg md:text-xl text-slate-600 font-medium">Meet the faculty and student contributors driving innovation and excellence at IEDC</p>
+          <div className="w-24 h-1.5 bg-blue-900 mx-auto mt-6 rounded-full"></div>
         </div>
       </section>
 
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12 iedc-gray">
+      <section className="pt-10 pb-16 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <h2 className="text-4xl font-extrabold text-center mb-12 text-slate-900 tracking-tight">
             Faculty Members
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {facultyMembers.map((member, index) => (
-              <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow border-l-4 border-iedc-blue">
-                <CardContent className="p-8">
-                  <div className="flex items-start space-x-6">
-                    {/* Faculty Photo */}
-                    <div className="flex-shrink-0">
-                      <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-100">
-                        <img
-                          src={member.image}
-                          alt={member.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+              <motion.div
+                key={index}
+                custom={index}
+                variants={facultyVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                className="h-full"
+              >
+                <Card className="shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-t-4 border-iedc-blue overflow-hidden flex flex-col h-full group bg-white/50 backdrop-blur-sm">
+                {/* Faculty Photo (Large) */}
+                <div className="w-full h-72 md:h-80 relative overflow-hidden bg-gray-100">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                  />
+                </div>
+
+                <CardContent className="p-6 flex-1 flex flex-col relative z-10 bg-white">
+                  <div className="flex items-start justify-between mb-4 gap-4">
+                    <div>
+                      <h3 className="text-xl font-bold iedc-gray mb-1 group-hover:text-blue-700 transition-colors">{member.name}</h3>
+                      <p className="font-semibold text-blue-600 text-sm leading-tight">{member.designation}</p>
                     </div>
-
-                    {/* Faculty Details */}
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <h3 className="text-xl font-bold iedc-gray mb-1">{member.name}</h3>
-                        </div>
-                        <div className={`w-8 h-8 ${member.bgColor} rounded-full flex items-center justify-center`}>
-                          <member.icon className="text-white h-4 w-4" />
-                        </div>
-                      </div>
-
-                      <div className="mb-3">
-                        <p className="font-semibold iedc-blue text-sm mb-1">Designation</p>
-                        <p className="text-gray-700 text-sm">{member.designation}</p>
-                      </div>
-
-                      <div>
-                        <p className="font-semibold iedc-blue text-sm mb-1">Bio</p>
-                        <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
-                      </div>
+                    <div className={`flex-shrink-0 w-10 h-10 ${member.bgColor} rounded-full flex items-center justify-center shadow-md`}>
+                      <member.icon className="text-white h-5 w-5" />
                     </div>
+                  </div>
+
+                  <div className="mt-auto pt-4 border-t border-gray-100">
+                    <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
                   </div>
                 </CardContent>
               </Card>
+              </motion.div>
             ))}
           </div>
 
@@ -422,37 +470,43 @@ export default function People() {
                     else if (committee.bgColor === 'bg-slate-600') borderColor = 'border-slate-600';
 
                     return (
-                      <Card key={memberIndex} className={`shadow-lg hover:shadow-xl transition-shadow border-l-4 ${borderColor} w-64 flex-shrink-0`}>
-                        <CardContent className="p-6">
-                          <div className="text-center">
-                            {/* Student Photo */}
-                            <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 bg-gray-100">
-                              <img
-                                src={member.image}
-                                alt={member.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
+                      <motion.div 
+                        key={memberIndex} 
+                        custom={{ index: memberIndex, total: committee.members.length }}
+                        variants={studentVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-50px" }}
+                        className="flex flex-col items-center w-52 md:w-56 flex-shrink-0 group cursor-pointer"
+                      >
+                        {/* Full Circle Student Photo */}
+                        <div className={`w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden mb-4 shadow-lg group-hover:shadow-2xl transition-all duration-300 border-4 ${borderColor} bg-gray-100 relative group-hover:-translate-y-2`}>
+                          <img
+                            src={member.image}
+                            alt={member.name}
+                            className="w-full h-full object-cover object-[center_10%] group-hover:scale-110 transition-transform duration-500"
+                          />
+                        </div>
 
-                            <h4 className="text-lg font-bold iedc-gray mb-2">{member.name}</h4>
-
-                            {/* Committees */}
-                            <div className="mb-3">
-                              <p className="font-semibold iedc-blue text-xs mb-2">Sub-Committee{member.committees.length > 1 ? 's' : ''}</p>
-                              <div className="flex flex-wrap justify-center gap-1">
-                                {member.committees.map((comm, commIndex) => (
-                                  <Badge
-                                    key={commIndex}
-                                    className={`text-xs px-2 py-1 ${commIndex === 0 ? committee.bgColor + ' text-white' : 'bg-gray-200 text-gray-700'}`}
-                                  >
-                                    {comm}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </div>
+                        {/* Details Outside Below */}
+                        <div className="flex flex-col items-center justify-center text-center px-2">
+                          <h4 className="text-base md:text-lg font-bold iedc-gray mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                            {member.name}
+                          </h4>
+                          
+                          <div className="flex flex-wrap justify-center gap-1.5 mt-1">
+                            {member.committees.slice(0, 2).map((comm, commIndex) => (
+                              <Badge
+                                key={commIndex}
+                                className={`text-[10px] md:text-xs px-2 py-0.5 ${commIndex === 0 ? committee.bgColor + ' text-white' : 'bg-gray-200 text-gray-700'} shadow-sm`}
+                                title={comm}
+                              >
+                                {comm}
+                              </Badge>
+                            ))}
                           </div>
-                        </CardContent>
-                      </Card>
+                        </div>
+                      </motion.div>
                     );
                   })}
                 </div>
