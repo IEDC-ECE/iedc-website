@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Info, Eye, Target, Users, Rocket, Images, Mail, TrendingUp, Calendar, Briefcase, Award, Lightbulb, ArrowRight, ExternalLink, RefreshCw } from "lucide-react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import iedcLogo from "@assets/IEDC_Logo_1753773593525.png";
 import iemLogo from "@assets/iem_logo_1754317566104.png";
 import uemLogo from "@assets/uem_logo_1754317566102.png";
@@ -141,6 +142,20 @@ const itemVariants = {
 export default function Home() {
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
 
+  const { data: notionData } = useQuery({
+    queryKey: ['opportunities'],
+    queryFn: async () => {
+      const res = await fetch('/api/opportunities');
+      return res.json();
+    }
+  });
+
+  const displayOpportunities = {
+    funding: notionData?.funding?.length ? notionData.funding : opportunities.funding,
+    grants: notionData?.grants?.length ? notionData.grants : opportunities.grants,
+    internships: opportunities.internships
+  };
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
@@ -209,170 +224,197 @@ export default function Home() {
       </section>
 
       {/* Opportunities Section */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative z-10 border-t-4 border-blue-900 overflow-hidden">
+      <section className="py-24 bg-gradient-to-b from-slate-50 via-white to-slate-50 relative z-10 border-t border-slate-200 overflow-hidden">
         
         {/* Left Side IEM Logo */}
         <div className="hidden xl:flex absolute left-4 2xl:left-12 top-1/2 -translate-y-1/2 z-0 group pointer-events-none">
-          <img src={iemLogo} alt="IEM Logo" className="w-32 2xl:w-48 opacity-100 transition-transform hover:scale-105 duration-500 drop-shadow-2xl pointer-events-auto cursor-pointer" />
+          <img src={iemLogo} alt="IEM Logo" className="w-32 2xl:w-48 opacity-20 group-hover:opacity-100 transition-opacity duration-500 grayscale group-hover:grayscale-0 drop-shadow-xl pointer-events-auto cursor-pointer" />
         </div>
         
         {/* Right Side UEM Logo */}
         <div className="hidden xl:flex absolute right-4 2xl:right-12 top-1/2 -translate-y-1/2 z-0 group pointer-events-none">
-          <img src={uemLogo} alt="UEM Logo" className="w-32 2xl:w-48 opacity-100 transition-transform hover:scale-105 duration-500 drop-shadow-2xl pointer-events-auto cursor-pointer" />
+          <img src={uemLogo} alt="UEM Logo" className="w-32 2xl:w-48 opacity-20 group-hover:opacity-100 transition-opacity duration-500 grayscale group-hover:grayscale-0 drop-shadow-xl pointer-events-auto cursor-pointer" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div 
-            className="text-center mb-16"
+            className="text-center mb-20"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold iedc-gray mb-4">Latest Opportunities</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
+            <div className="inline-flex items-center justify-center p-3 bg-indigo-50 text-indigo-600 rounded-2xl mb-6 shadow-sm border border-indigo-100">
+              <Target className="w-6 h-6" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-slate-800 tracking-tight mb-6">
+              Latest <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Opportunities</span>
+            </h2>
+            <p className="text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed font-medium">
               Discover the latest startup funding, research grants, and internship opportunities available through our network.
-              <br className="hidden md:block" />
-              <span className="inline-flex items-center gap-2 mt-3 px-4 py-1.5 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 text-indigo-700 font-semibold rounded-full text-sm border border-indigo-100 shadow-sm">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500"></span>
-                </span>
-                Fully automated & AI-curated in real time
-              </span>
             </p>
+            <div className="mt-8">
+              <span className="inline-flex items-center gap-2 px-5 py-2 bg-white text-indigo-700 font-bold rounded-full text-sm border border-indigo-100 shadow-[0_4px_20px_rgba(99,102,241,0.1)]">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                </span>
+                Automated & AI-Curated Real Time
+              </span>
+            </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-10">
             {/* Startup Funding Column */}
             <motion.div 
-              className="relative bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-2 border-blue-900 hover:shadow-[0_20px_40px_rgba(30,58,138,0.08)] transition-all duration-500 flex flex-col h-full hover:-translate-y-1 group/card"
-              initial={{ opacity: 0, y: 20 }}
+              className="relative group rounded-[2.5rem] bg-white hover:bg-gradient-to-br hover:from-white hover:to-blue-50/50 transition-all duration-500 shadow-xl hover:shadow-2xl shadow-blue-900/5 hover:shadow-blue-500/20 flex flex-col h-full border border-gray-100 overflow-hidden"
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-blue-400/10 rounded-full blur-3xl group-hover/card:bg-blue-400/20 transition-all duration-500"></div>
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 to-indigo-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
               
-              <button className="absolute top-6 right-6 p-2 rounded-full text-gray-400 hover:text-blue-900 hover:bg-blue-100 transition-colors z-20 group/refresh" aria-label="Refresh">
-                <RefreshCw className="w-5 h-5 group-hover/refresh:rotate-180 transition-transform duration-500" />
+              <button className="absolute top-8 right-8 p-2.5 rounded-full bg-slate-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 border border-slate-100 transition-all z-20 group/refresh shadow-sm" aria-label="Refresh">
+                <RefreshCw className="w-4 h-4 group-hover/refresh:rotate-180 transition-transform duration-500" />
               </button>
               
-              <div className="flex items-center gap-5 mb-8 pb-6 border-b border-gray-100/80 relative z-10 pr-12">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 transform group-hover/card:scale-110 group-hover/card:rotate-3 transition-all duration-500">
-                  <Lightbulb className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold iedc-gray tracking-tight">Startup Funding</h3>
-                  <p className="text-sm text-gray-500 font-medium mt-1">Recent investments</p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-4 flex-grow relative z-10">
-                {opportunities.funding.map(item => (
-                  <div key={item.id} className="group/item p-5 rounded-2xl bg-gray-50/50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-blue-100 hover:shadow-md">
-                    <div className="flex justify-between items-start mb-3">
-                      <h4 className="font-semibold text-gray-800 group-hover/item:text-blue-700 transition-colors text-lg">{item.title}</h4>
-                      <span className="text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full text-sm">{item.amount}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-sm text-gray-500">
-                      <span className="bg-white group-hover/item:bg-blue-50 px-3 py-1 rounded-lg text-xs font-semibold shadow-sm border border-gray-100 group-hover/item:border-blue-100 transition-colors">{item.tag}</span>
-                      <span className="font-medium">{item.date}</span>
-                    </div>
+              <div className="p-8 flex flex-col h-full z-10">
+                <div className="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100 pr-12">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <Lightbulb className="w-7 h-7" />
                   </div>
-                ))}
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800 tracking-tight group-hover:text-blue-700 transition-colors">Startup Funding</h3>
+                    <p className="text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider">Recent investments</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col gap-4 flex-grow">
+                  {displayOpportunities.funding.map((item: any) => (
+                    <div key={item.id} className="group/item p-5 rounded-2xl bg-slate-50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-blue-100 hover:shadow-lg hover:shadow-blue-900/5">
+                      <div className="flex justify-between items-start mb-3">
+                        <h4 className="font-bold text-slate-800 group-hover/item:text-blue-700 transition-colors text-lg pr-4 line-clamp-1">{item.title}</h4>
+                        <span className="text-blue-700 font-black bg-blue-100/50 px-3 py-1 rounded-full text-sm shrink-0 border border-blue-200/50">{item.amount}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="bg-white group-hover/item:bg-blue-50 px-3 py-1 rounded-lg text-xs font-bold text-slate-600 shadow-sm border border-slate-200 group-hover/item:border-blue-200 transition-colors">{item.tag}</span>
+                        <span className="font-semibold text-slate-400">{item.date}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <button className="mt-8 w-full py-4 rounded-2xl bg-slate-50 hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-600 text-slate-600 hover:text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn border border-slate-100 hover:border-transparent shadow-sm">
+                  View All Funding <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                </button>
               </div>
-              <button className="mt-8 w-full py-4 rounded-2xl bg-gray-50 hover:bg-blue-600 hover:text-white text-blue-600 font-semibold transition-all duration-300 flex items-center justify-center gap-2 group/btn relative z-10 overflow-hidden">
-                <span className="relative z-10 flex items-center gap-2">View All Funding <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" /></span>
-              </button>
             </motion.div>
 
             {/* Grant-in-aid Column */}
             <motion.div 
-              className="relative bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-2 border-blue-900 hover:shadow-[0_20px_40px_rgba(147,51,234,0.08)] transition-all duration-500 flex flex-col h-full hover:-translate-y-1 group/card"
-              initial={{ opacity: 0, y: 20 }}
+              className="relative group rounded-[2.5rem] bg-white hover:bg-gradient-to-br hover:from-white hover:to-purple-50/50 transition-all duration-500 shadow-xl hover:shadow-2xl shadow-purple-900/5 hover:shadow-purple-500/20 flex flex-col h-full border border-gray-100 overflow-hidden"
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-purple-400/10 rounded-full blur-3xl group-hover/card:bg-purple-400/20 transition-all duration-500"></div>
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-purple-400 to-fuchsia-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
               
-              <button className="absolute top-6 right-6 p-2 rounded-full text-gray-400 hover:text-blue-900 hover:bg-blue-100 transition-colors z-20 group/refresh" aria-label="Refresh">
-                <RefreshCw className="w-5 h-5 group-hover/refresh:rotate-180 transition-transform duration-500" />
+              <button className="absolute top-8 right-8 p-2.5 rounded-full bg-slate-50 text-slate-400 hover:text-purple-600 hover:bg-purple-50 border border-slate-100 transition-all z-20 group/refresh shadow-sm" aria-label="Refresh">
+                <RefreshCw className="w-4 h-4 group-hover/refresh:rotate-180 transition-transform duration-500" />
               </button>
               
-              <div className="flex items-center gap-5 mb-8 pb-6 border-b border-gray-100/80 relative z-10 pr-12">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white flex items-center justify-center shadow-lg shadow-purple-500/30 transform group-hover/card:scale-110 group-hover/card:rotate-3 transition-all duration-500">
-                  <Award className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold iedc-gray tracking-tight">Grant-in-aid</h3>
-                  <p className="text-sm text-gray-500 font-medium mt-1">Research & Innovation</p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-4 flex-grow relative z-10">
-                {opportunities.grants.map(item => (
-                  <div key={item.id} className="group/item p-5 rounded-2xl bg-gray-50/50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-purple-100 hover:shadow-md">
-                    <div className="flex justify-between items-start mb-3">
-                      <h4 className="font-semibold text-gray-800 group-hover/item:text-purple-700 transition-colors text-lg pr-4">{item.title}</h4>
-                      <ExternalLink className="w-5 h-5 text-gray-300 group-hover/item:text-purple-500 transition-colors flex-shrink-0" />
-                    </div>
-                    <div className="flex justify-between items-end">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-sm font-medium text-gray-600">{item.provider}</span>
-                        <span className="text-xs text-gray-400 font-medium">{item.date}</span>
-                      </div>
-                      <span className="text-purple-600 font-bold bg-purple-50 px-3 py-1 rounded-full text-sm">{item.amount}</span>
-                    </div>
+              <div className="p-8 flex flex-col h-full z-10">
+                <div className="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100 pr-12">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white flex items-center justify-center shadow-lg shadow-purple-500/30 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <Award className="w-7 h-7" />
                   </div>
-                ))}
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800 tracking-tight group-hover:text-purple-700 transition-colors">Grant-in-aid</h3>
+                    <p className="text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider">Research & Innovation</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col gap-4 flex-grow">
+                  {displayOpportunities.grants.map((item: any) => (
+                    <div key={item.id} className="group/item p-5 rounded-2xl bg-slate-50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-purple-100 hover:shadow-lg hover:shadow-purple-900/5">
+                      <div className="flex justify-between items-start mb-3">
+                        <h4 className="font-bold text-slate-800 group-hover/item:text-purple-700 transition-colors text-lg pr-4 line-clamp-1">{item.title}</h4>
+                        <ExternalLink className="w-5 h-5 text-slate-300 group-hover/item:text-purple-500 transition-colors flex-shrink-0" />
+                      </div>
+                      <div className="flex justify-between items-end">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-sm font-bold text-slate-600">{item.provider}</span>
+                          <span className="text-xs text-slate-400 font-semibold">{item.date}</span>
+                        </div>
+                        <span className="text-purple-700 font-black bg-purple-100/50 px-3 py-1 rounded-full text-sm border border-purple-200/50">{item.amount}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <button className="mt-8 w-full py-4 rounded-2xl bg-slate-50 hover:bg-gradient-to-r hover:from-purple-600 hover:to-fuchsia-600 text-slate-600 hover:text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn border border-slate-100 hover:border-transparent shadow-sm">
+                  View All Grants <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                </button>
               </div>
-              <button className="mt-8 w-full py-4 rounded-2xl bg-gray-50 hover:bg-purple-600 hover:text-white text-purple-600 font-semibold transition-all duration-300 flex items-center justify-center gap-2 group/btn relative z-10 overflow-hidden">
-                <span className="relative z-10 flex items-center gap-2">View All Grants <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" /></span>
-              </button>
             </motion.div>
 
             {/* Internships Column */}
             <motion.div 
-              className="relative bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-2 border-blue-900 hover:shadow-[0_20px_40px_rgba(20,184,166,0.08)] transition-all duration-500 flex flex-col h-full hover:-translate-y-1 group/card"
-              initial={{ opacity: 0, y: 20 }}
+              className="relative group rounded-[2.5rem] bg-white hover:bg-gradient-to-br hover:from-white hover:to-teal-50/50 transition-all duration-500 shadow-xl hover:shadow-2xl shadow-teal-900/5 hover:shadow-emerald-500/20 flex flex-col h-full border border-gray-100 overflow-hidden"
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-teal-400/10 rounded-full blur-3xl group-hover/card:bg-teal-400/20 transition-all duration-500"></div>
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-teal-400 to-emerald-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
               
-              <button className="absolute top-6 right-6 p-2 rounded-full text-gray-400 hover:text-blue-900 hover:bg-blue-100 transition-colors z-20 group/refresh" aria-label="Refresh">
-                <RefreshCw className="w-5 h-5 group-hover/refresh:rotate-180 transition-transform duration-500" />
+              <button className="absolute top-8 right-8 p-2.5 rounded-full bg-slate-50 text-slate-400 hover:text-teal-600 hover:bg-teal-50 border border-slate-100 transition-all z-20 group/refresh shadow-sm" aria-label="Refresh">
+                <RefreshCw className="w-4 h-4 group-hover/refresh:rotate-180 transition-transform duration-500" />
               </button>
               
-              <div className="flex items-center gap-5 mb-8 pb-6 border-b border-gray-100/80 relative z-10 pr-12">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-emerald-500 text-white flex items-center justify-center shadow-lg shadow-teal-500/30 transform group-hover/card:scale-110 group-hover/card:rotate-3 transition-all duration-500">
-                  <Briefcase className="w-7 h-7" />
+              <div className="p-8 flex flex-col h-full z-10">
+                <div className="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100 pr-12">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-emerald-500 text-white flex items-center justify-center shadow-lg shadow-teal-500/30 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <Briefcase className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800 tracking-tight group-hover:text-teal-700 transition-colors">Internships</h3>
+                    <p className="text-sm text-slate-500 font-bold mt-1 uppercase tracking-wider">Student opportunities</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-2xl font-bold iedc-gray tracking-tight">Internships</h3>
-                  <p className="text-sm text-gray-500 font-medium mt-1">Student opportunities</p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-4 flex-grow relative z-10">
-                {opportunities.internships.map(item => (
-                  <div key={item.id} className="group/item p-5 rounded-2xl bg-gray-50/50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-teal-100 hover:shadow-md">
-                    <div className="flex justify-between items-start mb-3">
-                      <h4 className="font-semibold text-gray-800 group-hover/item:text-teal-700 transition-colors text-lg line-clamp-1 pr-2">{item.role}</h4>
-                      <span className="text-teal-700 font-bold bg-teal-50 px-3 py-1 rounded-full text-xs whitespace-nowrap">{item.duration}</span>
-                    </div>
-                    <div className="flex justify-between items-center mt-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500">{item.company.charAt(0)}</div>
-                        <span className="font-medium text-gray-600 text-sm">{item.company}</span>
-                      </div>
-                      <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">{item.location}</span>
+                
+                <div className="flex flex-col gap-4 flex-grow relative z-10">
+                  {/* Coming Soon Overlay */}
+                  <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/60 backdrop-blur-sm rounded-2xl">
+                    <div className="transform -rotate-6 bg-white px-8 py-3 border-4 border-teal-500 rounded-2xl shadow-[0_10px_40px_rgba(20,184,166,0.3)] scale-110">
+                      <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-emerald-600 tracking-[0.2em] uppercase">Coming Soon</span>
                     </div>
                   </div>
-                ))}
+
+                  <div className="flex flex-col gap-4 flex-grow opacity-40 select-none pointer-events-none">
+                    {displayOpportunities.internships.map((item: any) => (
+                      <div key={item.id} className="group/item p-5 rounded-2xl bg-slate-50 border border-transparent">
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="font-bold text-slate-800 text-lg line-clamp-1 pr-2">{item.role}</h4>
+                          <span className="text-teal-700 font-black bg-teal-100/50 px-3 py-1 rounded-full text-xs whitespace-nowrap border border-teal-200/50">{item.duration}</span>
+                        </div>
+                        <div className="flex justify-between items-center mt-2">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-lg bg-slate-200 flex items-center justify-center text-xs font-black text-slate-500 shadow-inner">{item.company.charAt(0)}</div>
+                            <span className="font-bold text-slate-600 text-sm">{item.company}</span>
+                          </div>
+                          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{item.location}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <button className="mt-8 w-full py-4 rounded-2xl bg-slate-50 hover:bg-gradient-to-r hover:from-teal-500 hover:to-emerald-500 text-slate-600 hover:text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn border border-slate-100 hover:border-transparent shadow-sm">
+                  View All Internships <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                </button>
               </div>
-              <button className="mt-8 w-full py-4 rounded-2xl bg-gray-50 hover:bg-teal-500 hover:text-white text-teal-600 font-semibold transition-all duration-300 flex items-center justify-center gap-2 group/btn relative z-10 overflow-hidden">
-                <span className="relative z-10 flex items-center gap-2">View All Internships <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" /></span>
-              </button>
             </motion.div>
           </div>
         </div>

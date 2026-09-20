@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, BookOpen, ExternalLink, Calendar } from "lucide-react";
+import { User, BookOpen, ExternalLink, Calendar, Users } from "lucide-react";
+import { motion } from "framer-motion";
 import { conferencePublications2025To2026 } from "@/data/publications-2025-2026";
 
 type ConferencePublication = {
@@ -784,89 +785,115 @@ const conferenceData: AcademicYearData[] = [
 
 export default function InnovationConference() {
   return (
-    <div>
-      <section className="py-16 bg-gradient-to-r from-iedc-blue to-iedc-light-blue text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-8">Conference Publications</h1>
-          <p className="text-xl">Papers presented at national and international conferences</p>
-          <div className="w-24 h-1 bg-white mx-auto mt-8"></div>
+    <div className="min-h-screen bg-gray-50/50">
+      {/* Hero Section */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-teal-900 to-emerald-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500 rounded-full blur-[128px] opacity-20"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <div className="inline-flex items-center justify-center p-3 bg-white/10 backdrop-blur-md rounded-2xl mb-6 shadow-xl border border-white/20">
+              <Users className="w-8 h-8 text-teal-300" />
+            </div>
+            <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-teal-200">
+              Conference Publications
+            </h1>
+            <p className="text-xl md:text-2xl text-teal-100/80 max-w-3xl mx-auto font-light leading-relaxed">
+              Papers presented at leading national and international conferences.
+            </p>
+          </motion.div>
         </div>
       </section>
 
-      <section className="py-16 bg-white">
+      <section className="py-24 relative -mt-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {conferenceData.map((yearData, yearIndex) => (
-            <div key={yearIndex} className="mb-12">
-              <div className="mb-8">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                  Academic Year: {yearData.year}
+            <div key={yearIndex} className="mb-20">
+              <div className="mb-10 flex items-center gap-4">
+                <div className="h-px bg-teal-200 flex-1"></div>
+                <h2 className="text-3xl font-black text-slate-800 bg-clip-text text-transparent bg-gradient-to-r from-teal-700 to-emerald-700 px-4">
+                  {yearData.year}
                 </h2>
-                <div className="w-20 h-1 bg-iedc-blue"></div>
-                <p className="text-gray-600 mt-2">{yearData.publications.length} Publications</p>
+                <div className="h-px bg-teal-200 flex-1"></div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                 {yearData.publications.map((pub, index) => (
-                  <Card key={index} className="shadow-md hover:shadow-lg transition-shadow border-l-4 border-iedc-blue">
-                    <CardContent className="p-6">
-                      <div className="mb-4">
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge className="bg-purple-100 text-purple-800">
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
+                    className="h-full"
+                  >
+                    <div className="relative group rounded-[2rem] bg-white hover:bg-gradient-to-br hover:from-white hover:to-teal-50/50 transition-all duration-500 shadow-xl hover:shadow-2xl shadow-teal-900/5 hover:shadow-emerald-500/20 h-full border border-gray-100 flex flex-col overflow-hidden">
+                      {/* Top Accent Line */}
+                      <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-teal-400 to-emerald-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                      
+                      <div className="p-8 flex flex-col h-full z-10">
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          <Badge className="bg-teal-100 hover:bg-teal-200 text-teal-800 shadow-sm border-teal-200 transition-colors">
                             <BookOpen className="w-3 h-3 mr-1" />
                             Conference Paper
                           </Badge>
                           {pub.indexing && (
-                            <Badge variant="outline" className="border-emerald-300 text-emerald-700">
+                            <Badge variant="outline" className="border-emerald-300 text-emerald-700 bg-emerald-50">
                               {pub.indexing}
                             </Badge>
                           )}
                         </div>
-                        <h3 className="text-lg font-bold text-gray-800 mb-3 line-clamp-3">
+                        
+                        <h3 className="text-xl font-bold text-slate-800 mb-4 group-hover:text-teal-700 transition-colors line-clamp-3">
                           {pub.paper}
                         </h3>
-                      </div>
 
-                      <div className="space-y-3">
-                        <div className="flex items-start">
-                          <User className="text-iedc-blue h-4 w-4 mt-1 mr-2 flex-shrink-0" />
-                          <div>
-                            <p className="text-sm font-medium text-gray-700">Authors</p>
-                            <p className="text-sm text-gray-600">{pub.authors}</p>
+                        <div className="space-y-4 mb-6 flex-grow">
+                          <div className="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <User className="text-teal-600 w-5 h-5 flex-shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-0.5">Authors</p>
+                              <p className="text-sm font-semibold text-slate-700 leading-snug">{pub.authors}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <Users className="text-teal-600 w-5 h-5 flex-shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-0.5">Conference</p>
+                              <p className="text-sm font-semibold text-slate-700 leading-snug italic">{pub.conference}</p>
+                            </div>
                           </div>
                         </div>
 
-                        <div className="flex items-start">
-                          <BookOpen className="text-iedc-blue h-4 w-4 mt-1 mr-2 flex-shrink-0" />
-                          <div>
-                            <p className="text-sm font-medium text-gray-700">Conference</p>
-                            <p className="text-sm text-gray-600">{pub.conference}</p>
+                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
+                          <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
+                            <div className="flex items-center gap-1.5">
+                               <Calendar className="w-4 h-4 text-teal-500" />
+                               <span>{pub.date}</span>
+                            </div>
                           </div>
-                        </div>
 
-                        <div className="flex items-start">
-                          <Calendar className="text-iedc-blue h-4 w-4 mt-1 mr-2 flex-shrink-0" />
-                          <div>
-                            <p className="text-sm font-medium text-gray-700">Date</p>
-                            <p className="text-sm text-gray-600">{pub.date}</p>
-                          </div>
-                        </div>
-
-                        {pub.doi && (
-                          <div className="mt-4">
+                          {pub.doi && (
                             <a
                               href={`https://doi.org/${pub.doi}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center text-sm text-iedc-blue hover:text-iedc-dark-blue font-medium transition-colors"
+                              className="inline-flex items-center gap-1 text-sm text-teal-600 hover:text-teal-800 font-bold transition-colors group/link"
                             >
-                              <ExternalLink className="w-4 h-4 mr-1" />
-                              View DOI
+                              DOI
+                              <ExternalLink className="w-4 h-4 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
                             </a>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </motion.div>
                 ))}
               </div>
             </div>

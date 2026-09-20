@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, BookOpen, ExternalLink, Calendar } from "lucide-react";
+import { User, BookOpen, ExternalLink, Calendar, FileText } from "lucide-react";
+import { motion } from "framer-motion";
 import { journalPublications2025To2026 } from "@/data/publications-2025-2026";
 
 type JournalPublication = {
@@ -417,102 +418,113 @@ const journalData: AcademicYearData[] = [
 
 export default function InnovationJournal() {
   return (
-    <div>
-      <section className="py-16 bg-gradient-to-r from-iedc-blue to-iedc-light-blue text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-8">Journal Publications</h1>
-          <p className="text-xl">Research published in peer-reviewed academic journals</p>
-          <div className="w-24 h-1 bg-white mx-auto mt-8"></div>
+    <div className="min-h-screen bg-gray-50/50">
+      {/* Hero Section */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500 rounded-full blur-[128px] opacity-20"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <div className="inline-flex items-center justify-center p-3 bg-white/10 backdrop-blur-md rounded-2xl mb-6 shadow-xl border border-white/20">
+              <BookOpen className="w-8 h-8 text-blue-300" />
+            </div>
+            <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
+              Journal Publications
+            </h1>
+            <p className="text-xl md:text-2xl text-blue-100/80 max-w-3xl mx-auto font-light leading-relaxed">
+              Research published in high-impact peer-reviewed academic journals.
+            </p>
+          </motion.div>
         </div>
       </section>
 
-      <section className="py-16 bg-white">
+      <section className="py-24 relative -mt-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {journalData.map((yearData, yearIndex) => (
-            <div key={yearIndex} className="mb-12">
-              <div className="mb-8">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                  Academic Year: {yearData.year}
+            <div key={yearIndex} className="mb-20">
+              <div className="mb-10 flex items-center gap-4">
+                <div className="h-px bg-indigo-200 flex-1"></div>
+                <h2 className="text-3xl font-black text-slate-800 bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-blue-700 px-4">
+                  {yearData.year}
                 </h2>
-                <div className="w-20 h-1 bg-iedc-blue"></div>
-                <p className="text-gray-600 mt-2">{yearData.publications.length} Publications</p>
+                <div className="h-px bg-indigo-200 flex-1"></div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                 {yearData.publications.map((pub, index) => (
-                  <Card key={index} className="shadow-md hover:shadow-lg transition-shadow border-l-4 border-iedc-blue">
-                    <CardContent className="p-6">
-                      <div className="mb-4">
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          <Badge className="bg-blue-100 text-blue-800">
-                            <BookOpen className="w-3 h-3 mr-1" />
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
+                    className="h-full"
+                  >
+                    <div className="relative group rounded-[2rem] bg-white hover:bg-gradient-to-br hover:from-white hover:to-blue-50/50 transition-all duration-500 shadow-xl hover:shadow-2xl shadow-blue-900/5 hover:shadow-indigo-500/20 h-full border border-gray-100 flex flex-col overflow-hidden">
+                      {/* Top Accent Line */}
+                      <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 to-indigo-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                      
+                      <div className="p-8 flex flex-col h-full z-10">
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          <Badge className="bg-blue-100 hover:bg-blue-200 text-blue-800 shadow-sm border-blue-200 transition-colors">
+                            <FileText className="w-3 h-3 mr-1" />
                             Journal Article
                           </Badge>
                           {pub.indexing && (
-                            <Badge variant="outline" className="border-emerald-300 text-emerald-700">
+                            <Badge variant="outline" className="border-emerald-300 text-emerald-700 bg-emerald-50">
                               {pub.indexing}
                             </Badge>
                           )}
                         </div>
-                        <h3 className="text-lg font-bold text-gray-800 mb-3 line-clamp-3">
+                        
+                        <h3 className="text-xl font-bold text-slate-800 mb-4 group-hover:text-indigo-700 transition-colors line-clamp-3">
                           {pub.paper}
                         </h3>
-                      </div>
 
-                      <div className="space-y-3">
-                        <div className="flex items-start">
-                          <User className="text-iedc-blue h-4 w-4 mt-1 mr-2 flex-shrink-0" />
-                          <div>
-                            <p className="text-sm font-medium text-gray-700">Authors</p>
-                            <p className="text-sm text-gray-600">{pub.authors}</p>
-                          </div>
-                        </div>
-
-                        <div>
-                          <p className="text-sm font-medium text-gray-700">Journal</p>
-                          <p className="text-sm text-gray-600">{pub.journal}</p>
-                        </div>
-
-                        {pub.year && (
-                          <div className="flex items-start">
-                            <Calendar className="text-iedc-blue h-4 w-4 mt-1 mr-2 flex-shrink-0" />
+                        <div className="space-y-4 mb-6 flex-grow">
+                          <div className="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <User className="text-indigo-500 w-5 h-5 flex-shrink-0 mt-0.5" />
                             <div>
-                              <p className="text-sm font-medium text-gray-700">Year</p>
-                              <p className="text-sm text-gray-600">{pub.year}</p>
+                              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-0.5">Authors</p>
+                              <p className="text-sm font-semibold text-slate-700 leading-snug">{pub.authors}</p>
                             </div>
                           </div>
-                        )}
-
-                        {pub.volume && (
-                          <div>
-                            <p className="text-sm font-medium text-gray-700">Volume</p>
-                            <p className="text-sm text-gray-600">{pub.volume}</p>
+                          
+                          <div className="flex items-start gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <BookOpen className="text-indigo-500 w-5 h-5 flex-shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-0.5">Journal</p>
+                              <p className="text-sm font-semibold text-slate-700 leading-snug italic">{pub.journal}</p>
+                            </div>
                           </div>
-                        )}
+                        </div>
 
-                        {pub.pages && (
-                          <div>
-                            <p className="text-sm font-medium text-gray-700">Pages</p>
-                            <p className="text-sm text-gray-600">{pub.pages}</p>
+                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
+                          <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
+                            {pub.volume && <span>Vol: {pub.volume}</span>}
+                            {pub.pages && <span>pp: {pub.pages}</span>}
                           </div>
-                        )}
 
-                        {pub.doi && (
-                          <div className="mt-4">
+                          {pub.doi && (
                             <a
                               href={`https://doi.org/${pub.doi}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center text-sm text-iedc-blue hover:text-iedc-dark-blue font-medium transition-colors"
+                              className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 font-bold transition-colors group/link"
                             >
-                              <ExternalLink className="w-4 h-4 mr-1" />
-                              View DOI
+                              DOI
+                              <ExternalLink className="w-4 h-4 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
                             </a>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
