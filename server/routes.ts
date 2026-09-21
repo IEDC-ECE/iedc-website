@@ -1,12 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { Client } from "@notionhq/client";
-
-// Initialize Notion client (will safely fail if no key provided until route is hit)
-const notion = new Client({
-  auth: process.env.NOTION_SECRET_KEY || "dummy",
-});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // put application routes here
@@ -21,9 +15,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const fundingDbId = "3e04630d905d80e79ac3e74a5e1ee1b8";
       const grantsDbId = "3de4630d905d8095ba15cf3ea6ea01ba";
 
+      const headers = {
+        "Authorization": `Bearer ${process.env.NOTION_SECRET_KEY}`,
+        "Notion-Version": "2022-06-28",
+        "Content-Type": "application/json"
+      };
+
+      const fetchDb = async (dbId: string) => {
+        const response = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({})
+        });
+        if (!response.ok) {
+          throw new Error(`Notion API error: ${response.statusText}`);
+        }
+        return response.json();
+      };
+
       const [fundingResponse, grantsResponse] = await Promise.all([
-        notion.databases.query({ database_id: fundingDbId }),
-        notion.databases.query({ database_id: grantsDbId }),
+        fetchDb(fundingDbId),
+        fetchDb(grantsDbId),
       ]);
 
       const getText = (prop: any) => {
@@ -31,8 +43,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (prop.type === "title" && prop.title.length > 0) return prop.title[0].plain_text;
         if (prop.type === "rich_text" && prop.rich_text.length > 0) return prop.rich_text[0].plain_text;
         if (prop.type === "select" && prop.select) return prop.select.name;
+        if (prop.type === "multi_select" && prop.multi_select) return prop.multi_select.map((m: any) => m.name).join(", ");
+        if (prop.type === "status" && prop.status) return prop.status.name;
         if (prop.type === "number") return prop.number.toString();
         if (prop.type === "date" && prop.date) return prop.date.start;
+        if (prop.type === "url" && prop.url) return prop.url;
         return "";
       };
 
@@ -49,9 +64,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return {
           id: page.id,
           title: getText(findProp(["name", "title", "startup"])) || "Unknown Startup",
-          amount: getText(findProp(["amount", "fund", "money"])) || "TBD",
-          date: getText(findProp(["date", "time", "year"])) || "Recent",
-          tag: getText(findProp(["tag", "stage", "round", "type"])) || "Seed",
+          agency: getText(findProp(["agency", "provider"])) || "TBD",
+          fit: getText(findProp(["fit", "tag"])) || "Unknown",
+          target: getText(findProp(["target"])) || "All",
+          deadline: getText(findProp(["deadline", "date"])) || "Rolling",
+          source: getText(findProp(["source", "link", "url"])) || "",
         };
       });
 
@@ -68,9 +85,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return {
           id: page.id,
           title: getText(findProp(["name", "title", "project"])) || "Research Project",
-          provider: getText(findProp(["provider", "agency", "grantor", "source"])) || "Govt. Agency",
-          amount: getText(findProp(["amount", "grant", "fund"])) || "TBD",
-          date: getText(findProp(["date", "time", "year"])) || "Recent",
+          agency: getText(findProp(["agency", "provider"])) || "TBD",
+          fit: getText(findProp(["fit", "tag"])) || "Unknown",
+          target: getText(findProp(["target"])) || "All",
+          deadline: getText(findProp(["deadline", "date"])) || "Rolling",
+          source: getText(findProp(["source", "link", "url"])) || "",
         };
       });
 

@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Info, Eye, Target, Users, Rocket, Images, Mail, TrendingUp, Calendar, Briefcase, Award, Lightbulb, ArrowRight, ExternalLink, RefreshCw } from "lucide-react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
@@ -274,10 +275,6 @@ export default function Home() {
             >
               <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 to-indigo-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
               
-              <button className="absolute top-8 right-8 p-2.5 rounded-full bg-slate-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 border border-slate-100 transition-all z-20 group/refresh shadow-sm" aria-label="Refresh">
-                <RefreshCw className="w-4 h-4 group-hover/refresh:rotate-180 transition-transform duration-500" />
-              </button>
-              
               <div className="p-8 flex flex-col h-full z-10">
                 <div className="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100 pr-12">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
@@ -290,23 +287,58 @@ export default function Home() {
                 </div>
                 
                 <div className="flex flex-col gap-4 flex-grow">
-                  {displayOpportunities.funding.map((item: any) => (
-                    <div key={item.id} className="group/item p-5 rounded-2xl bg-slate-50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-blue-100 hover:shadow-lg hover:shadow-blue-900/5">
+                  {displayOpportunities.funding.slice(0, 5).map((item: any) => (
+                    <a key={item.id} href={item.source || "#"} target={item.source ? "_blank" : undefined} rel="noopener noreferrer" className="group/item p-5 rounded-2xl bg-slate-50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-blue-100 hover:shadow-lg hover:shadow-blue-900/5 block">
                       <div className="flex justify-between items-start mb-3">
-                        <h4 className="font-bold text-slate-800 group-hover/item:text-blue-700 transition-colors text-lg pr-4 line-clamp-1">{item.title}</h4>
-                        <span className="text-blue-700 font-black bg-blue-100/50 px-3 py-1 rounded-full text-sm shrink-0 border border-blue-200/50">{item.amount}</span>
+                        <h4 className="font-bold text-slate-800 group-hover/item:text-blue-700 transition-colors text-lg pr-4 line-clamp-1 flex-1 flex items-center gap-2">
+                          {item.title}
+                          <ExternalLink className="w-4 h-4 opacity-0 group-hover/item:opacity-100 transition-opacity flex-shrink-0" />
+                        </h4>
+                        <span className="text-blue-700 font-black bg-blue-100/50 px-3 py-1 rounded-full text-xs shrink-0 border border-blue-200/50 uppercase tracking-wider">{item.agency}</span>
                       </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="bg-white group-hover/item:bg-blue-50 px-3 py-1 rounded-lg text-xs font-bold text-slate-600 shadow-sm border border-slate-200 group-hover/item:border-blue-200 transition-colors">{item.tag}</span>
-                        <span className="font-semibold text-slate-400">{item.date}</span>
+                      <div className="flex justify-between items-end text-sm">
+                        <div className="flex flex-wrap gap-2">
+                          <span className={`px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm border transition-colors uppercase ${item.fit?.toLowerCase().includes('strong') ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>{item.fit}</span>
+                          <span className="bg-amber-50 text-amber-700 border-amber-200 px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm border uppercase">{item.target}</span>
+                        </div>
+                        <span className="font-semibold text-slate-400 text-xs shrink-0">Deadline: {item.deadline}</span>
                       </div>
-                    </div>
+                    </a>
                   ))}
                 </div>
                 
-                <button className="mt-8 w-full py-4 rounded-2xl bg-slate-50 hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-600 text-slate-600 hover:text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn border border-slate-100 hover:border-transparent shadow-sm">
-                  View All Funding <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                </button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="mt-8 w-full py-4 rounded-2xl bg-slate-50 hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-600 text-slate-600 hover:text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn border border-slate-100 hover:border-transparent shadow-sm">
+                      View All Funding <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-black text-slate-800 mb-4">All Startup Funding</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-4">
+                      {displayOpportunities.funding.map((item: any) => (
+                        <a key={item.id} href={item.source || "#"} target={item.source ? "_blank" : undefined} rel="noopener noreferrer" className="group/item p-5 rounded-2xl bg-slate-50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-blue-100 hover:shadow-lg hover:shadow-blue-900/5 block">
+                          <div className="flex justify-between items-start mb-3">
+                            <h4 className="font-bold text-slate-800 group-hover/item:text-blue-700 transition-colors text-lg pr-4 flex-1 flex items-center gap-2">
+                              {item.title}
+                              <ExternalLink className="w-4 h-4 opacity-0 group-hover/item:opacity-100 transition-opacity flex-shrink-0" />
+                            </h4>
+                            <span className="text-blue-700 font-black bg-blue-100/50 px-3 py-1 rounded-full text-xs shrink-0 border border-blue-200/50 uppercase tracking-wider">{item.agency}</span>
+                          </div>
+                          <div className="flex justify-between items-end text-sm">
+                            <div className="flex flex-wrap gap-2">
+                              <span className={`px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm border transition-colors uppercase ${item.fit?.toLowerCase().includes('strong') ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>{item.fit}</span>
+                              <span className="bg-amber-50 text-amber-700 border-amber-200 px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm border uppercase">{item.target}</span>
+                            </div>
+                            <span className="font-semibold text-slate-400 text-xs shrink-0">Deadline: {item.deadline}</span>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </motion.div>
 
@@ -320,10 +352,6 @@ export default function Home() {
             >
               <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-purple-400 to-fuchsia-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
               
-              <button className="absolute top-8 right-8 p-2.5 rounded-full bg-slate-50 text-slate-400 hover:text-purple-600 hover:bg-purple-50 border border-slate-100 transition-all z-20 group/refresh shadow-sm" aria-label="Refresh">
-                <RefreshCw className="w-4 h-4 group-hover/refresh:rotate-180 transition-transform duration-500" />
-              </button>
-              
               <div className="p-8 flex flex-col h-full z-10">
                 <div className="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100 pr-12">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white flex items-center justify-center shadow-lg shadow-purple-500/30 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
@@ -336,26 +364,58 @@ export default function Home() {
                 </div>
                 
                 <div className="flex flex-col gap-4 flex-grow">
-                  {displayOpportunities.grants.map((item: any) => (
-                    <div key={item.id} className="group/item p-5 rounded-2xl bg-slate-50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-purple-100 hover:shadow-lg hover:shadow-purple-900/5">
+                  {displayOpportunities.grants.slice(0, 5).map((item: any) => (
+                    <a key={item.id} href={item.source || "#"} target={item.source ? "_blank" : undefined} rel="noopener noreferrer" className="group/item p-5 rounded-2xl bg-slate-50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-purple-100 hover:shadow-lg hover:shadow-purple-900/5 block">
                       <div className="flex justify-between items-start mb-3">
-                        <h4 className="font-bold text-slate-800 group-hover/item:text-purple-700 transition-colors text-lg pr-4 line-clamp-1">{item.title}</h4>
-                        <ExternalLink className="w-5 h-5 text-slate-300 group-hover/item:text-purple-500 transition-colors flex-shrink-0" />
+                        <h4 className="font-bold text-slate-800 group-hover/item:text-purple-700 transition-colors text-lg pr-4 line-clamp-1 flex-1 flex items-center gap-2">
+                          {item.title}
+                          <ExternalLink className="w-4 h-4 opacity-0 group-hover/item:opacity-100 transition-opacity flex-shrink-0" />
+                        </h4>
+                        <span className="text-purple-700 font-black bg-purple-100/50 px-3 py-1 rounded-full text-xs shrink-0 border border-purple-200/50 uppercase tracking-wider">{item.agency}</span>
                       </div>
-                      <div className="flex justify-between items-end">
-                        <div className="flex flex-col gap-1">
-                          <span className="text-sm font-bold text-slate-600">{item.provider}</span>
-                          <span className="text-xs text-slate-400 font-semibold">{item.date}</span>
+                      <div className="flex justify-between items-end text-sm">
+                        <div className="flex flex-wrap gap-2">
+                          <span className={`px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm border transition-colors uppercase ${item.fit?.toLowerCase().includes('strong') ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-purple-50 text-purple-700 border-purple-200'}`}>{item.fit}</span>
+                          <span className="bg-amber-50 text-amber-700 border-amber-200 px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm border uppercase">{item.target}</span>
                         </div>
-                        <span className="text-purple-700 font-black bg-purple-100/50 px-3 py-1 rounded-full text-sm border border-purple-200/50">{item.amount}</span>
+                        <span className="font-semibold text-slate-400 text-xs shrink-0">Deadline: {item.deadline}</span>
                       </div>
-                    </div>
+                    </a>
                   ))}
                 </div>
                 
-                <button className="mt-8 w-full py-4 rounded-2xl bg-slate-50 hover:bg-gradient-to-r hover:from-purple-600 hover:to-fuchsia-600 text-slate-600 hover:text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn border border-slate-100 hover:border-transparent shadow-sm">
-                  View All Grants <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                </button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="mt-8 w-full py-4 rounded-2xl bg-slate-50 hover:bg-gradient-to-r hover:from-purple-600 hover:to-fuchsia-600 text-slate-600 hover:text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn border border-slate-100 hover:border-transparent shadow-sm">
+                      View All Grants <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-black text-slate-800 mb-4">All Grants</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-4">
+                      {displayOpportunities.grants.map((item: any) => (
+                        <a key={item.id} href={item.source || "#"} target={item.source ? "_blank" : undefined} rel="noopener noreferrer" className="group/item p-5 rounded-2xl bg-slate-50 hover:bg-white transition-all duration-300 cursor-pointer border border-transparent hover:border-purple-100 hover:shadow-lg hover:shadow-purple-900/5 block">
+                          <div className="flex justify-between items-start mb-3">
+                            <h4 className="font-bold text-slate-800 group-hover/item:text-purple-700 transition-colors text-lg pr-4 flex-1 flex items-center gap-2">
+                              {item.title}
+                              <ExternalLink className="w-4 h-4 opacity-0 group-hover/item:opacity-100 transition-opacity flex-shrink-0" />
+                            </h4>
+                            <span className="text-purple-700 font-black bg-purple-100/50 px-3 py-1 rounded-full text-xs shrink-0 border border-purple-200/50 uppercase tracking-wider">{item.agency}</span>
+                          </div>
+                          <div className="flex justify-between items-end text-sm">
+                            <div className="flex flex-wrap gap-2">
+                              <span className={`px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm border transition-colors uppercase ${item.fit?.toLowerCase().includes('strong') ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-purple-50 text-purple-700 border-purple-200'}`}>{item.fit}</span>
+                              <span className="bg-amber-50 text-amber-700 border-amber-200 px-3 py-1 rounded-lg text-[10px] font-bold shadow-sm border uppercase">{item.target}</span>
+                            </div>
+                            <span className="font-semibold text-slate-400 text-xs shrink-0">Deadline: {item.deadline}</span>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </motion.div>
 
@@ -368,10 +428,6 @@ export default function Home() {
               transition={{ delay: 0.3 }}
             >
               <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-teal-400 to-emerald-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
-              
-              <button className="absolute top-8 right-8 p-2.5 rounded-full bg-slate-50 text-slate-400 hover:text-teal-600 hover:bg-teal-50 border border-slate-100 transition-all z-20 group/refresh shadow-sm" aria-label="Refresh">
-                <RefreshCw className="w-4 h-4 group-hover/refresh:rotate-180 transition-transform duration-500" />
-              </button>
               
               <div className="p-8 flex flex-col h-full z-10">
                 <div className="flex items-center gap-5 mb-8 pb-6 border-b border-slate-100 pr-12">
@@ -393,7 +449,7 @@ export default function Home() {
                   </div>
 
                   <div className="flex flex-col gap-4 flex-grow opacity-40 select-none pointer-events-none">
-                    {displayOpportunities.internships.map((item: any) => (
+                    {displayOpportunities.internships.slice(0, 5).map((item: any) => (
                       <div key={item.id} className="group/item p-5 rounded-2xl bg-slate-50 border border-transparent">
                         <div className="flex justify-between items-start mb-3">
                           <h4 className="font-bold text-slate-800 text-lg line-clamp-1 pr-2">{item.role}</h4>
@@ -411,9 +467,35 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <button className="mt-8 w-full py-4 rounded-2xl bg-slate-50 hover:bg-gradient-to-r hover:from-teal-500 hover:to-emerald-500 text-slate-600 hover:text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn border border-slate-100 hover:border-transparent shadow-sm">
-                  View All Internships <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                </button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="mt-8 w-full py-4 rounded-2xl bg-slate-50 hover:bg-gradient-to-r hover:from-teal-500 hover:to-emerald-500 text-slate-600 hover:text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn border border-slate-100 hover:border-transparent shadow-sm">
+                      View All Internships <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-black text-slate-800 mb-4">All Internships (Coming Soon)</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-4 opacity-40 select-none pointer-events-none">
+                      {displayOpportunities.internships.map((item: any) => (
+                        <div key={item.id} className="group/item p-5 rounded-2xl bg-slate-50 border border-transparent">
+                          <div className="flex justify-between items-start mb-3">
+                            <h4 className="font-bold text-slate-800 text-lg line-clamp-1 pr-2">{item.role}</h4>
+                            <span className="text-teal-700 font-black bg-teal-100/50 px-3 py-1 rounded-full text-xs whitespace-nowrap border border-teal-200/50">{item.duration}</span>
+                          </div>
+                          <div className="flex justify-between items-center mt-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-7 h-7 rounded-lg bg-slate-200 flex items-center justify-center text-xs font-black text-slate-500 shadow-inner">{item.company.charAt(0)}</div>
+                              <span className="font-bold text-slate-600 text-sm">{item.company}</span>
+                            </div>
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{item.location}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </motion.div>
           </div>
